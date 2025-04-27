@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useFonts, Poppins_700Bold } from '@expo-google-fonts/poppins';
+import React, { useState } from 'react'
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
+import { useFonts, Poppins_700Bold } from '@expo-google-fonts/poppins'
+import { Dimensions } from 'react-native'
+
+const { width } = Dimensions.get('window');
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -101,11 +104,11 @@ const styles = StyleSheet.create({
   },
   areaFormulario: {
     backgroundColor: '#f9f4ea',
-    width: '90%',
+    width: width * 0.9,
     borderRadius: 20,
     padding: 20,
     marginBottom: 20,
-    alignContent: 'center'
+    alignItems: 'center',
   },
   label: {
     fontSize: 18,
@@ -168,10 +171,10 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   imagem: {
-    width: '100%',
-    height: 200,
+    width: width * 0.8, 
+    height: width * 0.5, 
     borderRadius: 20,
     marginTop: 20,
-    alignSelf:'center'
+    alignSelf: 'center',
   },
 });
