@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, ScrollView, Dimensions } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { useFonts, Poppins_700Bold } from '@expo-google-fonts/poppins'
-import { Dimensions } from 'react-native'
 
 const { width } = Dimensions.get('window');
 
@@ -61,60 +60,62 @@ function TelaInicial() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titulo}>EasyKitchen</Text>
-      <Text style={styles.subtitulo}>O que tem na sua cozinha vira receita aqui.</Text>
+      <ScrollView style={styles.scroll} contentContainerStyle={{ alignItems: 'center', paddingBottom: 40 }}>
+        <Text style={styles.titulo}>EasyKitchen</Text>
+        <Text style={styles.subtitulo}>O que tem na sua cozinha vira receita aqui.</Text>
 
-      <View style={styles.areaFormulario}>
-        <Text style={styles.label}>Digite um ingrediente:</Text>
+        <View style={styles.areaFormulario}>
+          <Text style={styles.label}>Digite um ingrediente:</Text>
 
-        <View style={styles.areaAdicionar}>
-          <TextInput
-            style={styles.input}
-            placeholder="Ex: Ovo, Tomate..."
-            value={ingrediente}
-            onChangeText={setIngrediente}
-          />
-          <TouchableOpacity style={styles.botaoAdicionar} onPress={adicionarIngrediente}>
-            <Text style={styles.textoBotaoAdicionar}>+ Add</Text>
+          <View style={styles.areaAdicionar}>
+            <TextInput
+              style={styles.input}
+              placeholder="Ex: Ovo, Tomate..."
+              value={ingrediente}
+              onChangeText={setIngrediente}
+            />
+            <TouchableOpacity style={styles.botaoAdicionar} onPress={adicionarIngrediente}>
+              <Text style={styles.textoBotaoAdicionar}>+ Add</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.listaIngredientes}>
+            {listaIngredientes.map((item, index) => (
+              <View key={index} style={styles.ingredienteItem}>
+                <Text style={styles.textoIngrediente}>{item}</Text>
+                <TouchableOpacity onPress={() => removerIngrediente(index)}>
+                  <Ionicons name="close" size={16} color="#fff" />
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
+
+          <TouchableOpacity style={styles.botaoBuscarReceita} onPress={buscarReceitas}>
+            <Ionicons name="search" size={20} color="#fff" />
+            <Text style={styles.textoBotaoBuscarReceita}>Achar receita</Text>
           </TouchableOpacity>
-        </View>
 
-        <View style={styles.listaIngredientes}>
-          {listaIngredientes.map((item, index) => (
-            <View key={index} style={styles.ingredienteItem}>
-              <Text style={styles.textoIngrediente}>{item}</Text>
-              <TouchableOpacity onPress={() => removerIngrediente(index)}>
-                <Ionicons name="close" size={16} color="#fff" />
-              </TouchableOpacity>
+          {carregando && <Text style={{ marginTop: 20 }}>Buscando receitas...</Text>}
+
+          {receitas.length > 0 && (
+            <View style={{ marginTop: 20, width: '100%', alignItems: 'center' }}>
+              <Text style={styles.label}>Receitas encontradas:</Text>
+              {receitas.map((receita) => (
+                <View key={receita.id} style={styles.receitaItem}>
+                  <Image source={{ uri: receita.image }} style={styles.receitaImagem} />
+                  <Text style={styles.receitaTitulo}>{receita.title}</Text>
+                </View>
+              ))}
             </View>
-          ))}
+          )}
+
+          <Image
+            source={{ uri: 'https://img.freepik.com/fotos-gratis/mulher-cozinhando-o-almoco-em-casa_1303-24175.jpg?t=st=1745773801~exp=1745777401~hmac=840f442929a99a0cf8d0bfe28d64479e0aa42c95b9bb95efb254bc8fc79b41cb&w=996' }}
+            style={styles.imagem}
+            resizeMode="cover"
+          />
         </View>
-
-        <TouchableOpacity style={styles.botaoBuscarReceita} onPress={buscarReceitas}>
-          <Ionicons name="search" size={20} color="#fff" />
-          <Text style={styles.textoBotaoBuscarReceita}>Achar receita</Text>
-        </TouchableOpacity>
-
-        {carregando && <Text style={{ marginTop: 20 }}>Buscando receitas...</Text>}
-
-        {receitas.length > 0 && (
-        <View style={{ marginTop: 20 }}>
-          <Text style={styles.label}>Receitas encontradas:</Text>
-            {receitas.map((receita) => (
-            <View key={receita.id} style={styles.receitaItem}>
-            < Image source={{ uri: receita.image }} style={styles.receitaImagem}/>
-          <Text style={styles.receitaTitulo}>{receita.title}</Text>
-        </View>
-        ))}
-     </View>
-     )}
-
-        <Image
-          source={{ uri: 'https://img.freepik.com/fotos-gratis/mulher-cozinhando-o-almoco-em-casa_1303-24175.jpg?t=st=1745773801~exp=1745777401~hmac=840f442929a99a0cf8d0bfe28d64479e0aa42c95b9bb95efb254bc8fc79b41cb&w=996' }}
-          style={styles.imagem}
-          resizeMode="cover"
-        />
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -125,6 +126,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#2e3c23',
     alignItems: 'center',
     paddingTop: 50,
+  },
+  scroll: {
+    width: '100%',
   },
   titulo: {
     fontSize: 32,
@@ -210,8 +214,8 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   imagem: {
-    width: width * 0.8, 
-    height: width * 0.5, 
+    width: width * 0.8,
+    height: width * 0.5,
     borderRadius: 20,
     marginTop: 20,
     alignSelf: 'center',
@@ -222,6 +226,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: 'hidden',
     alignItems: 'center',
+    width: width * 0.8,
   },
   receitaImagem: {
     width: '100%',
