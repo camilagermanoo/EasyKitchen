@@ -68,7 +68,7 @@ function TelaInicial() {
 
         <TouchableOpacity style={styles.botaoBuscarReceita}>
           <Ionicons name="search" size={20} color="#fff" />
-          <Text style={styles.textoBotaoBuscar}>Achar receita</Text>
+          <Text style={styles.textoBotaoBuscarReceita}>Achar receita</Text>
         </TouchableOpacity>
 
         <Image
@@ -164,8 +164,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
+    width: 150,
   },
-  textoBotaoBuscar: {
+  textoBotaoBuscarReceita: {
     color: '#fff',
     fontWeight: 'bold',
     marginLeft: 8,
