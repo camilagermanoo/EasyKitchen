@@ -235,7 +235,8 @@ const styles = StyleSheet.create({
   },
   receitaImagem: {
     width: '100%',
-    height: 150,
+    height: 200,
+    borderRadius: 20,
   },
   receitaTitulo: {
     padding: 10,
