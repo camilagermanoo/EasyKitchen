@@ -6,6 +6,8 @@ import { Dimensions } from 'react-native'
 
 const { width } = Dimensions.get('window');
 
+const apiKey = "a7f420376ad140f3bf73c977d9163c02"
+
 export default function App() {
   const [fontsLoaded] = useFonts({
     Poppins_700Bold,
@@ -21,6 +23,8 @@ export default function App() {
 function TelaInicial() {
   const [ingrediente, setIngrediente] = useState('');
   const [listaIngredientes, setListaIngredientes] = useState([]);
+  const [receitas, setReceitas] = useState([]);
+  const [carregando, setCarregando] = useState(false);
 
   const adicionarIngrediente = () => {
     if (ingrediente.trim()) {
@@ -33,6 +37,26 @@ function TelaInicial() {
     const novaLista = [...listaIngredientes];
     novaLista.splice(index, 1);
     setListaIngredientes(novaLista);
+  };
+
+  const buscarReceitas = async () => {
+    if (listaIngredientes.length === 0) {
+      alert('Adicione pelo menos um ingrediente!');
+      return;
+    }
+
+    setCarregando(true);
+
+    try {
+      const resposta = await fetch(`https://api.spoonacular.com/recipes/findByIngredients?ingredients=${listaIngredientes.join(',')}&number=5&apiKey=${apiKey}`);
+      const dados = await resposta.json();
+      setReceitas(dados);
+    } catch (error) {
+      console.error('Erro ao buscar receitas:', error);
+      alert('Erro ao buscar receitas.');
+    } finally {
+      setCarregando(false);
+    }
   };
 
   return (
@@ -66,10 +90,24 @@ function TelaInicial() {
           ))}
         </View>
 
-        <TouchableOpacity style={styles.botaoBuscarReceita}>
+        <TouchableOpacity style={styles.botaoBuscarReceita} onPress={buscarReceitas}>
           <Ionicons name="search" size={20} color="#fff" />
           <Text style={styles.textoBotaoBuscarReceita}>Achar receita</Text>
         </TouchableOpacity>
+
+        {carregando && <Text style={{ marginTop: 20 }}>Buscando receitas...</Text>}
+
+        {receitas.length > 0 && (
+        <View style={{ marginTop: 20 }}>
+          <Text style={styles.label}>Receitas encontradas:</Text>
+            {receitas.map((receita) => (
+            <View key={receita.id} style={styles.receitaItem}>
+            < Image source={{ uri: receita.image }} style={styles.receitaImagem}/>
+          <Text style={styles.receitaTitulo}>{receita.title}</Text>
+        </View>
+        ))}
+     </View>
+     )}
 
         <Image
           source={{ uri: 'https://img.freepik.com/fotos-gratis/mulher-cozinhando-o-almoco-em-casa_1303-24175.jpg?t=st=1745773801~exp=1745777401~hmac=840f442929a99a0cf8d0bfe28d64479e0aa42c95b9bb95efb254bc8fc79b41cb&w=996' }}
@@ -177,5 +215,22 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginTop: 20,
     alignSelf: 'center',
+  },
+  receitaItem: {
+    backgroundColor: '#fafafa',
+    marginBottom: 15,
+    borderRadius: 10,
+    overflow: 'hidden',
+    alignItems: 'center',
+  },
+  receitaImagem: {
+    width: '100%',
+    height: 150,
+  },
+  receitaTitulo: {
+    padding: 10,
+    fontWeight: 'bold',
+    fontSize: 16,
+    textAlign: 'center',
   },
 });
