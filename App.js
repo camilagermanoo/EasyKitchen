@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, ScrollView, Dimensions } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, ScrollView, Dimensions, ActivityIndicator } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { useFonts, Poppins_700Bold } from '@expo-google-fonts/poppins'
 
@@ -62,15 +62,15 @@ function TelaInicial() {
     <View style={styles.container}>
       <ScrollView style={styles.scroll} contentContainerStyle={{ alignItems: 'center', paddingBottom: 40 }}>
         <Text style={styles.titulo}>EasyKitchen</Text>
-        <Text style={styles.subtitulo}>O que tem na sua cozinha vira receita aqui.</Text>
+        <Text style={styles.subtitulo}>What you have in your kitchen becomes a recipe here.</Text>
 
         <View style={styles.areaFormulario}>
-          <Text style={styles.label}>Digite um ingrediente:</Text>
+          <Text style={styles.label}>Enter an ingredient:</Text>
 
           <View style={styles.areaAdicionar}>
             <TextInput
               style={styles.input}
-              placeholder="Ex: Ovo, Tomate..."
+              placeholder="Ex: Egg, Tomato..."
               value={ingrediente}
               onChangeText={setIngrediente}
             />
@@ -92,14 +92,19 @@ function TelaInicial() {
 
           <TouchableOpacity style={styles.botaoBuscarReceita} onPress={buscarReceitas}>
             <Ionicons name="search" size={20} color="#fff" />
-            <Text style={styles.textoBotaoBuscarReceita}>Achar receita</Text>
+            <Text style={styles.textoBotaoBuscarReceita}>Find recipe</Text>
           </TouchableOpacity>
 
-          {carregando && <Text style={{ marginTop: 20 }}>Buscando receitas...</Text>}
+          {carregando && (
+            <View style={styles.areaCarregando}>
+              <ActivityIndicator size="large" color="#4d6b3c" />
+              <Text style={styles.textoCarregando}>Finding recipes...</Text>
+            </View>
+          )}
 
           {receitas.length > 0 && (
             <View style={{ marginTop: 20, width: '100%', alignItems: 'center' }}>
-              <Text style={styles.label}>Receitas encontradas:</Text>
+              <Text style={styles.label}>Recipes found:</Text>
               {receitas.map((receita) => (
                 <View key={receita.id} style={styles.receitaItem}>
                   <Image source={{ uri: receita.image }} style={styles.receitaImagem} />
@@ -237,5 +242,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
     textAlign: 'center',
+  },
+  areaCarregando: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  textoCarregando: {
+    marginTop: 10,
+    color: '#4d6b3c',
+    fontWeight: 'bold',
   },
 });
